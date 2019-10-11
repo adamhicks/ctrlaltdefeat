@@ -11,7 +11,6 @@ type PartInfo struct {
 	Player string
 	Part   int64
 }
-<<<<<<< HEAD
 
 type PlayerRound struct {
 	ID        int64
