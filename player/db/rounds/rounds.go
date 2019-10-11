@@ -26,31 +26,6 @@ func InsertRoundParts(ctx context.Context, dbc *sql.DB, roundId int, playerId st
 	return id, tx.Commit()
 }
 
-func GetRoundParts(ctx context.Context, dbc *sql.DB, roundId int, playerId int) (*[]partsdb.RoundParts, error) {
-	rows, err := dbc.QueryContext(ctx, "select id, round_id, player_id, rank, p1_part, p2_part, p3_part, p4_part from round_parts where round_id=? and player_id=?", roundId, playerId)
-	if err != nil {
-		return nil, err
-	}
-
-	roundParts, err := scan(rows)
-	if err != nil {
-		return nil, err
-	}
-
-	return roundParts, nil
-}
-
-func scan(r *sql.Rows) (*[]partsdb.RoundParts, error) {
-	var roundPartsArr []partsdb.RoundParts
-
-	for r.Next() {
-		var roundParts partsdb.RoundParts
-		err := r.Scan(&roundParts.ID, &roundParts.RoundID, &roundParts.Rank, &roundParts.P1Part, &roundParts.P2Part, &roundParts.P3Part, &roundParts.P4Part)
-		if err != nil {
-			return nil, err
-		}
-		roundPartsArr = append(roundPartsArr, roundParts)
-	}
-
-	return &roundPartsArr, nil
+func GetRoundParts(ctx context.Context, dbc *sql.DB, roundId int, playerId int) ([]partsdb.RoundParts, error) {
+	return listWhere(ctx, dbc, "round_id=?", roundId)
 }
