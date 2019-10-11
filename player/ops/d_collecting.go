@@ -5,6 +5,9 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/luno/jettison/errors"
+	"github.com/luno/jettison/log"
+
 	"github.com/adamhicks/ctrlaltdefeat/player"
 	"github.com/adamhicks/ctrlaltdefeat/player/config"
 	partsdb "github.com/adamhicks/ctrlaltdefeat/player/db/parts"
@@ -16,7 +19,7 @@ import (
 //CollectRoundsForever
 //Get PRs with state RoundCollecting, get the round parts, try and fetch missing data, or if complete transition to RoundCollected
 
-func CollectRoundsForever(c config.Config, backends Backends) error {
+func CollectRoundsForever(c config.Config, backends Backends) {
 	dbc := backends.DB()
 	ctx := unsure.FatedContext()
 	ec := backends.EngineClient()
@@ -24,15 +27,27 @@ func CollectRoundsForever(c config.Config, backends Backends) error {
 	for {
 		rs, err := rounds.ListWithStatus(ctx, dbc, player.PlayerRoundStatusRoundCollecting)
 		if err != nil {
-			return err
+			log.Error(ctx, errors.Wrap(err, "Failed to list player_rounds in collecting state"), log.WithLevel(log.LevelInfo))
+			continue
 		}
 		for _, r := range rs {
 			res, err := ec.CollectRound(ctx, TeamName, me, r.RoundID)
 			if err != nil {
-				return err
+				log.Error(ctx, errors.Wrap(err, "Failed to CollectRound"), log.WithLevel(log.LevelInfo))
+				continue
 			}
 			if err = storeCollected(c, dbc, ctx, res, int(r.RoundID), me); err != nil {
-				return err
+				log.Error(ctx, errors.Wrap(err, "Failed to storeCollected"), log.WithLevel(log.LevelInfo))
+				continue
+			}
+			tx, err := dbc.Begin()
+			if err != nil {
+				log.Error(ctx, errors.Wrap(err, "Failed to begin transaction"), log.WithLevel(log.LevelInfo))
+				continue
+			}
+			if err = setCollected(ctx, tx, r.ID); err != nil {
+				log.Error(ctx, errors.Wrap(err, "Failed setCollected"), log.WithLevel(log.LevelInfo))
+				continue
 			}
 
 		}
@@ -58,4 +73,14 @@ func storeCollected(c config.Config, dbc *sql.DB, ctx context.Context, res *engi
 	}
 	_, err := partsdb.InsertRoundParts(ctx, dbc, roundID, me, rank, int64(p1Part), int64(p2Part), int64(p3Part), int64(p4Part))
 	return err
+}
+
+func setCollected(ctx context.Context, tx *sql.Tx, id int64) error {
+	defer tx.Rollback()
+	notify, err := rounds.Collected(ctx, tx, id)
+	if err != nil {
+		return err
+	}
+	defer notify()
+	return nil
 }
