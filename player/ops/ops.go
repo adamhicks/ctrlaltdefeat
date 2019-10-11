@@ -15,7 +15,8 @@ func RunLoops(c config.Config, backends Backends) {
 
 	go ConsumeRoundCollectEventsForever(backends)
 
-	go CollectRoundsForever(c, backends)
+	go CollectRoundsForever(backends, c)
+
 	go SubmitRoundsForever(backends, c)
 	go ConsumeRoundSubmitsForever(backends, c)
 
