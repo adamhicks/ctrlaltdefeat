@@ -24,6 +24,9 @@ func (一 joining) Insert(ctx context.Context, tx *sql.Tx,st shift.Status) (int6
 	q.WriteString("insert into player_rounds set `status`=?, `created_at`=?, `updated_at`=? ")
 	args = append(args, st.Enum(), time.Now(), time.Now())
 
+	q.WriteString(", `round_id`=?")
+	args = append(args, 一.RoundID)
+
 	res, err := tx.ExecContext(ctx, q.String(), args...)
 	if err != nil {
 		return 0, err

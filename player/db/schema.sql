@@ -9,6 +9,7 @@ create table player_cursors (
 create table player_rounds (
   id bigint not null auto_increment primary key,
   status int default 0,
+  round_id bigint not null,
   created_at datetime not null,
   updated_at datetime
 );
