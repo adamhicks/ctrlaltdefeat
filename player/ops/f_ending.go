@@ -30,6 +30,7 @@ func ConsumeRoundEndedForever(c config.Config, b Backends) {
 		if err != nil {
 			return err
 		}
+		defer tx.Rollback()
 
 		if int(round.Status) == player.PlayerRoundStatusRoundExcluded.Enum() {
 			notify, err := rounds.EndedExcluded(ctx, tx, round.ID)
@@ -37,12 +38,14 @@ func ConsumeRoundEndedForever(c config.Config, b Backends) {
 				return err
 			}
 			defer notify()
+			return tx.Commit()
 		} else if int(round.Status) == player.PlayerRoundStatusRoundSubmitted.Enum() {
 			notify, err := rounds.EndedJoined(ctx, tx, round.ID)
 			if err != nil {
 				return err
 			}
 			defer notify()
+			return tx.Commit()
 		}
 
 		return fate.Tempt()
