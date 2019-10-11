@@ -12,7 +12,7 @@ import (
 
 var _ playerpb.PlayerServer = (*Server)(nil)
 
-// Server implements the engine grpc server.
+// Server implements the player grpc server.
 type Server struct {
 	b       ops.Backends
 	rserver *reflex.Server
