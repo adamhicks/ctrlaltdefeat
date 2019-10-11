@@ -33,5 +33,5 @@ create table round_parts (
     `p4_part` int not null,
 
     primary key (id),
-    unique by_match_round_player(`round_id`, `player_id`)
+    unique by_round_player(`round_id`, `player_id`)
 );
