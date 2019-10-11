@@ -11,7 +11,7 @@ func RunLoops(c config.Config, backends Backends) {
 	go ConsumeMatchEventsForever(backends, c)
 	go StartRoundsForever(backends)
 
-	go JoinRoundsForever(c, backends)
+	go JoinRoundsForever(backends, c)
 
 	go ConsumeRoundCollectEventsForever(backends)
 

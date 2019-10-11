@@ -2,6 +2,7 @@ package ops
 
 import (
 	"context"
+
 	"github.com/adamhicks/ctrlaltdefeat/player"
 	"github.com/adamhicks/ctrlaltdefeat/player/config"
 	"github.com/adamhicks/ctrlaltdefeat/player/db/cursors"
@@ -17,7 +18,7 @@ import (
 
 const roundJoiningConsumer = "round_joining"
 
-func JoinRoundsForever(p config.Config, b Backends) {
+func JoinRoundsForever(b Backends, c config.Config) {
 	f := func(ctx context.Context, fate fate.Fate, e *reflex.Event) error {
 		if !reflex.IsType(e.Type, engine.EventTypeRoundJoin) {
 			return fate.Tempt()
@@ -28,7 +29,7 @@ func JoinRoundsForever(p config.Config, b Backends) {
 			return err
 		}
 
-		joined, err := b.EngineClient().JoinRound(ctx, TeamName, p.GetMe().Name, pr.RoundID)
+		joined, err := b.EngineClient().JoinRound(ctx, TeamName, c.GetMe().Name, pr.RoundID)
 		if err != nil {
 			return err
 		}
@@ -37,6 +38,7 @@ func JoinRoundsForever(p config.Config, b Backends) {
 		if err != nil {
 			return err
 		}
+		defer tx.Rollback()
 
 		if joined {
 			notify, err := rounds.Joined(ctx, tx, pr.ID)
@@ -45,8 +47,7 @@ func JoinRoundsForever(p config.Config, b Backends) {
 			}
 
 			defer notify()
-
-			return fate.Tempt()
+			return tx.Commit()
 		}
 
 		notify, err := rounds.Excluded(ctx, tx, pr.ID)
@@ -55,8 +56,7 @@ func JoinRoundsForever(p config.Config, b Backends) {
 		}
 
 		defer notify()
-
-		return fate.Tempt()
+		return tx.Commit()
 	}
 
 	consumer := reflex.NewConsumer(roundJoiningConsumer, f)
