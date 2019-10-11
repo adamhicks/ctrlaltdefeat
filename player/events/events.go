@@ -5,14 +5,13 @@ import (
 	"database/sql"
 
 	"github.com/adamhicks/ctrlaltdefeat/player"
-
 	"github.com/luno/reflex"
 	"github.com/luno/reflex/rsql"
 )
 
 const tableName = "player_rounds_events"
 
-var table = rsql.NewEventsTableInt(tableName)
+var table = rsql.NewEventsTableInt(tableName, rsql.WithEventForeignIDField("round_id"))
 
 func Insert(ctx context.Context, tx *sql.Tx, foreignID int64,
 	typ player.PlayerRoundStatus) (func(), error) {
