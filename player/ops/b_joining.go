@@ -8,7 +8,6 @@ import (
 	"github.com/adamhicks/ctrlaltdefeat/player/db/rounds"
 	"github.com/corverroos/unsure"
 	"github.com/corverroos/unsure/engine"
-	_ "github.com/corverroos/unsure/engine"
 	"github.com/luno/fate"
 	"github.com/luno/reflex"
 )
@@ -26,7 +25,7 @@ func JoinRoundsForever(p config.Config, b Backends) {
 
 		pr, err := rounds.LookupRoundAndStatus(ctx, b.DB(), e.ForeignIDInt(), player.PlayerRoundStatusRoundJoining)
 		if err != nil {
-			return fate.Tempt()
+			return err
 		}
 
 		joined, err := b.EngineClient().JoinRound(ctx, TeamName, p.GetMe().Name, pr.RoundID)
@@ -40,7 +39,7 @@ func JoinRoundsForever(p config.Config, b Backends) {
 		}
 
 		if joined {
-			_, err := rounds.Joined(ctx, tx, pr.RoundID)
+			_, err := rounds.Joined(ctx, tx, pr.ID)
 			if err != nil {
 				return err
 			}
@@ -48,7 +47,7 @@ func JoinRoundsForever(p config.Config, b Backends) {
 			return fate.Tempt()
 		}
 
-		_, err = rounds.Excluded(ctx, tx, pr.RoundID)
+		_, err = rounds.Excluded(ctx, tx, pr.ID)
 		if err != nil {
 			return err
 		}
