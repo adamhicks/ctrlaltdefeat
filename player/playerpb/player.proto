@@ -10,6 +10,7 @@ service Player {
 
 message GetRoundReq {
     int64 round_id = 1;
+    string player = 2;
 }
 
 message RoundInfo {

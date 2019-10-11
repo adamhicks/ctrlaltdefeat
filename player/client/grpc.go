@@ -57,9 +57,10 @@ func (c *client) Stream(ctx context.Context, after string, opts ...reflex.Stream
 	return sFn(ctx, after, opts...)
 }
 
-func (c *client) GetRoundParts(ctx context.Context, roundID int64) (player.RoundInfo, error) {
+func (c *client) GetRoundParts(ctx context.Context, roundID int64, playerName string) (player.RoundInfo, error) {
 	res, err := c.rpcClient.GetRoundParts(ctx, &playerpb.GetRoundReq{
 		RoundId: roundID,
+		Player:  playerName,
 	})
 	if err != nil {
 		return player.RoundInfo{}, err
