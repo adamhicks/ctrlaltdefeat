@@ -3,7 +3,9 @@ package server
 import (
 	"context"
 
+	"github.com/adamhicks/ctrlaltdefeat/player"
 	"github.com/adamhicks/ctrlaltdefeat/player/config"
+	"github.com/adamhicks/ctrlaltdefeat/player/db/rounds"
 	"github.com/adamhicks/ctrlaltdefeat/player/events"
 	"github.com/adamhicks/ctrlaltdefeat/player/ops"
 	"github.com/adamhicks/ctrlaltdefeat/player/playerpb"
@@ -40,9 +42,16 @@ func (srv *Server) Stream(req *reflexpb.StreamRequest, ss playerpb.Player_Stream
 }
 
 func (srv *Server) GetRoundParts(ctx context.Context, req *playerpb.GetRoundReq) (*playerpb.RoundInfo, error) {
+	r, err := rounds.LookupRound(ctx, srv.b.DB(), int(req.RoundId))
+	if err != nil {
+		return &playerpb.RoundInfo{}, err
+	}
+	if r.Status == int64(player.PlayerRoundStatusRoundExcluded.Enum()) {
+		return &playerpb.RoundInfo{}, player.ErrNotInRound
+	}
 	round, err := ops.GetPlayerPart(ctx, srv.c, srv.b.DB(), req.RoundId, req.Player)
 	if err != nil {
-		return nil, err
+		return &playerpb.RoundInfo{}, err
 	}
 	return playerpb.PlayerRoundInfoToProto(round), nil
 }

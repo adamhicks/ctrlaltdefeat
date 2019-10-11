@@ -22,7 +22,7 @@ func GetPlayerPart(
 			return p, nil
 		}
 	}
-	return player.RoundInfo{}, player.ErrPlayerNotFound
+	return player.RoundInfo{}, player.ErrPartNotCollected
 }
 
 func GetPlayerParts(ctx context.Context, c config.Config, dbc *sql.DB, roundID int64) ([]player.RoundInfo, error) {
