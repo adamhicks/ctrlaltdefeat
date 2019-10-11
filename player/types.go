@@ -27,7 +27,7 @@ func (prs PlayerRoundStatus) Enum() int {
 }
 
 func (prs PlayerRoundStatus) ReflexType() int {
-	return prs.ReflexType()
+	return prs.Enum()
 }
 
 func (PlayerRoundStatus) ShiftStatus() {
