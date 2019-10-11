@@ -25,20 +25,21 @@ func main() {
 		unsure.Fatal(errors.Wrap(err, "new state error"))
 	}
 
-	serveGRPCForever(c.GetMe(), s)
+	serveGRPCForever(c, s)
 	ops.RunLoops(c, s)
 
 	unsure.WaitForShutdown()
 }
 
-func serveGRPCForever(p config.Player, s *state.State) {
+func serveGRPCForever(c config.Config, s *state.State) {
+	p := c.GetMe()
 	addr := fmt.Sprintf("localhost:%d", p.GRPCPort)
 	grpcServer, err := unsure.NewServer(addr)
 	if err != nil {
 		unsure.Fatal(errors.Wrap(err, "new server"))
 	}
 
-	pServer := server.New(s)
+	pServer := server.New(s, c)
 	playerpb.RegisterPlayerServer(grpcServer.GRPCServer(), pServer)
 
 	unsure.RegisterNoErr(func() {
