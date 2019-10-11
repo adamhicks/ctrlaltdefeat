@@ -28,3 +28,18 @@ func InsertRoundParts(ctx context.Context, dbc *sql.DB, roundId int, playerId st
 func GetRoundParts(ctx context.Context, dbc *sql.DB, roundId int) ([]RoundParts, error) {
 	return listWhere(ctx, dbc, "round_id=?", roundId)
 }
+
+func DeleteAll(ctx context.Context, dbc *sql.DB) error {
+	tx, err := dbc.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	_, err = tx.ExecContext(ctx, "delete from round_parts")
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}
