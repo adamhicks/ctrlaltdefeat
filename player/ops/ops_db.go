@@ -9,6 +9,21 @@ import (
 	partsdb "github.com/adamhicks/ctrlaltdefeat/player/db/parts"
 )
 
+func GetPlayerPart(
+	ctx context.Context, c config.Config, dbc *sql.DB, roundID int64, playerName string,
+) (player.RoundInfo, error) {
+	parts, err := GetPlayerParts(ctx, c, dbc, roundID)
+	if err != nil {
+		return player.RoundInfo{}, err
+	}
+	for _, p := range parts {
+		if p.Player == playerName {
+			return p, nil
+		}
+	}
+	return player.RoundInfo{}, player.ErrPlayerNotFound
+}
+
 func GetPlayerParts(ctx context.Context, c config.Config, dbc *sql.DB, roundID int64) ([]player.RoundInfo, error) {
 	parts, err := partsdb.GetRoundParts(ctx, dbc, int(roundID))
 	if err != nil {
