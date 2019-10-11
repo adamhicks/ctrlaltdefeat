@@ -24,3 +24,11 @@ func ListWithStatus(ctx context.Context, dbc sql.DB, s player.PlayerRoundStatus)
 	}
 	return rounds, nil
 }
+
+func LookupRound(ctx context.Context, dbc dbc, roundID int) (player.PlayerRound, error) {
+	r, err := lookupWhere(ctx, dbc, "round_id=? order by id desc limit 1", roundID)
+	if err != nil {
+		return player.PlayerRound{}, err
+	}
+	return *r, nil
+}
