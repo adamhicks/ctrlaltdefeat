@@ -6,7 +6,6 @@ import (
 	partsdb "github.com/adamhicks/ctrlaltdefeat/player/db/parts"
 	"github.com/adamhicks/ctrlaltdefeat/player/db/rounds"
 
-	"github.com/adamhicks/ctrlaltdefeat/player/config"
 	"github.com/adamhicks/ctrlaltdefeat/player/db/cursors"
 	"github.com/corverroos/unsure"
 	"github.com/corverroos/unsure/engine"
@@ -17,7 +16,7 @@ import (
 const endCursor = "end_events"
 
 //Listen for MatchEnded event, wipe db
-func ConsumeMatchEndedForever(config config.Config, b Backends) {
+func ConsumeMatchEndedForever(b Backends) {
 	processMatchEvents := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
 		if !reflex.IsType(event.Type, engine.EventTypeMatchEnded) {
 			return fate.Tempt()
