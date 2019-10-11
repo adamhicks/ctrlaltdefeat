@@ -18,6 +18,7 @@ create table player_rounds_events (
   timestamp datetime not null,
   foreign_id bigint not null,
   type int not null
+);
 
 create table round_parts (
     `id` bigint not null auto_increment,
