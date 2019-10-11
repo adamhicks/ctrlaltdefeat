@@ -39,18 +39,22 @@ func JoinRoundsForever(p config.Config, b Backends) {
 		}
 
 		if joined {
-			_, err := rounds.Joined(ctx, tx, pr.ID)
+			notify, err := rounds.Joined(ctx, tx, pr.ID)
 			if err != nil {
 				return err
 			}
 
+			defer notify()
+
 			return fate.Tempt()
 		}
 
-		_, err = rounds.Excluded(ctx, tx, pr.ID)
+		notify, err := rounds.Excluded(ctx, tx, pr.ID)
 		if err != nil {
 			return err
 		}
+
+		defer notify()
 
 		return fate.Tempt()
 	}
