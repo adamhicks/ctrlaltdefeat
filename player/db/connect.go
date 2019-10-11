@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	dbURI = flag.String("player_db", "mysql://root@unix("+unsure.SockFile()+")/player?",
+	dbURI = flag.String("player_db", "mysql://root@unix("+unsure.SockFile()+")/player",
 		"player DB URI")
 )
 
@@ -21,25 +21,17 @@ type PlayerDB struct {
 	ReplicaDB *sql.DB
 }
 
-// ReplicaOrMaster returns the replica DB if available, otherwise the master.
-func (db *PlayerDB) ReplicaOrMaster() *sql.DB {
-	if db.ReplicaDB != nil {
-		return db.ReplicaDB
-	}
-	return db.DB
-}
-
 func Connect(p string) (*PlayerDB, error) {
-	appendPlayerToURI(p)
+	uri := *dbURI + p + "?"
 
-	ok, err := unsure.MaybeRecreateSchema(*dbURI, getSchemaPath())
+	ok, err := unsure.MaybeRecreateSchema(uri, getSchemaPath())
 	if err != nil {
 		return nil, err
 	} else if ok {
 		log.Info(nil, "recreated schema")
 	}
 
-	dbc, err := unsure.Connect(*dbURI)
+	dbc, err := unsure.Connect(uri)
 	if err != nil {
 		return nil, err
 	}
@@ -47,12 +39,6 @@ func Connect(p string) (*PlayerDB, error) {
 		DB:        dbc,
 		ReplicaDB: dbc,
 	}, nil
-}
-
-func appendPlayerToURI(p string) {
-	pdb := flag.Lookup("player_db")
-	uri := pdb.Value.String() + p
-	_ = flag.Set("player_db", uri)
 }
 
 func ConnectForTesting(t *testing.T) *sql.DB {
