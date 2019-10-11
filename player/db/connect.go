@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	dbURI = flag.String("player_db", "mysql://root@unix("+unsure.SockFile()+")/player",
+	dbURI = flag.String("player_db", "mysql://root@unix("+unsure.SockFile()+")/player_",
 		"player DB URI")
 )
 
