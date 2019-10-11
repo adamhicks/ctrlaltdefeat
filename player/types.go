@@ -3,8 +3,9 @@ package player
 import "time"
 
 type RoundInfo struct {
-	Rank  int64
-	Parts []PartInfo
+	Player string
+	Rank   int64
+	Parts  []PartInfo
 }
 
 type PartInfo struct {
