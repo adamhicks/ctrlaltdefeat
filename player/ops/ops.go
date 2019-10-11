@@ -7,7 +7,7 @@ const TeamName = "CtrlAltDefeat"
 func RunLoops(c config.Config, backends Backends) {
 	// Add loops to run here!
 	// e.g. go JoinRoundsForever()
-	go StartMatchForever(c, backends)
+	go StartMatchForever(backends, c)
 	go ConsumeMatchEventsForever(c, backends)
 	go StartRoundsForever(c, backends)
 	go ConsumeRoundCollectEventsForever(c, backends)
