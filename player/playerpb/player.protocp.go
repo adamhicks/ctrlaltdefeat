@@ -2,7 +2,7 @@ package playerpb
 
 import "github.com/adamhicks/ctrlaltdefeat/player"
 
-func PlayerPartInfoFromProto(info *PlayerPart) player.PartInfo {
+func PlayerPartInfoFromProto(info *PartInfo) player.PartInfo {
 	return player.PartInfo{
 		Player: info.Player,
 		Part:   info.Part,
