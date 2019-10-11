@@ -18,4 +18,18 @@ create table player_rounds_events (
   timestamp datetime not null,
   foreign_id bigint not null,
   type int not null
+
+create table round_parts (
+    `id` bigint not null auto_increment,
+
+    `round_id` int not null,
+    `player_id` varchar(255) not null,
+    `rank` int not null,
+    `p1_part` int not null,
+    `p2_part` int not null,
+    `p3_part` int not null,
+    `p4_part` int not null,
+
+    primary key (id),
+    unique by_match_round_player(`round_id`, `player_id`)
 );
