@@ -54,3 +54,18 @@ func EndedExcluded(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, 
 	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundExcluded,
 		player.PlayerRoundStatusRoundEnded, joined{ID: id})
 }
+
+func DeleteAll(ctx context.Context, dbc *sql.DB) error {
+	tx, err := dbc.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	_, err = tx.ExecContext(ctx, "delete from player_rounds")
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}
