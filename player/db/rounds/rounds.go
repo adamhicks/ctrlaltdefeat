@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/luno/reflex/rsql"
+
 	"github.com/adamhicks/ctrlaltdefeat/player"
 )
 
@@ -18,37 +20,37 @@ func Excluded(ctx context.Context, dbc *sql.DB, id int64) error {
 		player.PlayerRoundStatusRoundExcluded, excluded{ID: id})
 }
 
-func Joined(ctx context.Context, dbc *sql.DB, id int64) error {
-	return fsm.Update(ctx, dbc, player.PlayerRoundStatusRoundJoining,
+func Joined(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
+	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundJoining,
 		player.PlayerRoundStatusRoundJoined, joined{ID: id})
 }
 
-func Collecting(ctx context.Context, dbc *sql.DB, id int64) error {
-	return fsm.Update(ctx, dbc, player.PlayerRoundStatusRoundJoined,
+func Collecting(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
+	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundJoined,
 		player.PlayerRoundStatusRoundCollecting, joined{ID: id})
 }
 
-func Collected(ctx context.Context, dbc *sql.DB, id int64) error {
-	return fsm.Update(ctx, dbc, player.PlayerRoundStatusRoundCollecting,
+func Collected(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
+	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundCollecting,
 		player.PlayerRoundStatusRoundCollected, joined{ID: id})
 }
 
-func Submitting(ctx context.Context, dbc *sql.DB, id int64) error {
-	return fsm.Update(ctx, dbc, player.PlayerRoundStatusRoundCollected,
+func Submitting(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
+	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundCollected,
 		player.PlayerRoundStatusRoundSubmitting, joined{ID: id})
 }
 
-func Submitted(ctx context.Context, dbc *sql.DB, id int64) error {
-	return fsm.Update(ctx, dbc, player.PlayerRoundStatusRoundSubmitting,
+func Submitted(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
+	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundSubmitting,
 		player.PlayerRoundStatusRoundSubmitted, joined{ID: id})
 }
 
-func EndedJoined(ctx context.Context, dbc *sql.DB, id int64) error {
-	return fsm.Update(ctx, dbc, player.PlayerRoundStatusRoundSubmitted,
+func EndedJoined(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
+	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundSubmitted,
 		player.PlayerRoundStatusRoundEnded, joined{ID: id})
 }
 
-func EndedExcluded(ctx context.Context, dbc *sql.DB, id int64) error {
-	return fsm.Update(ctx, dbc, player.PlayerRoundStatusRoundExcluded,
+func EndedExcluded(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
+	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundExcluded,
 		player.PlayerRoundStatusRoundEnded, joined{ID: id})
 }
