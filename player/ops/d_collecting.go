@@ -22,21 +22,19 @@ func CollectRoundsForever(c config.Config, backends Backends) error {
 	ec := backends.EngineClient()
 	me := c.GetMe().Name
 	for {
-		rs, err := rounds.ListWithStatus(ctx, *dbc, player.PlayerRoundStatusRoundCollecting)
+		rs, err := rounds.ListWithStatus(ctx, dbc, player.PlayerRoundStatusRoundCollecting)
 		if err != nil {
 			return err
 		}
-		if rs != nil {
-			for _, r := range rs {
-				res, err := ec.CollectRound(ctx, TeamName, me, r.RoundID)
-				if err != nil {
-					return err
-				}
-				if err = storeCollected(c, dbc, ctx, res, int(r.RoundID), me); err != nil {
-					return err
-				}
-
+		for _, r := range rs {
+			res, err := ec.CollectRound(ctx, TeamName, me, r.RoundID)
+			if err != nil {
+				return err
 			}
+			if err = storeCollected(c, dbc, ctx, res, int(r.RoundID), me); err != nil {
+				return err
+			}
+
 		}
 		time.Sleep(time.Millisecond * 500)
 	}
