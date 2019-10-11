@@ -3,7 +3,6 @@ package ops
 import (
 	"context"
 
-	"github.com/adamhicks/ctrlaltdefeat/player/config"
 	"github.com/adamhicks/ctrlaltdefeat/player/db/cursors"
 	"github.com/adamhicks/ctrlaltdefeat/player/db/rounds"
 	"github.com/corverroos/unsure"
@@ -16,7 +15,7 @@ const joinedCursor = "joined_events"
 
 //ConsumeRoundCollectEventsForever
 //Listen for EventTypeRoundCollect, get the PR, transition to RoundCollecting
-func ConsumeRoundCollectEventsForever(c config.Config, b Backends) {
+func ConsumeRoundCollectEventsForever(b Backends) {
 	cli := b.EngineClient()
 
 	f := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
