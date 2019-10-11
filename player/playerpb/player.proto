@@ -5,19 +5,19 @@ import "github.com/luno/reflex/reflexpb/reflex.proto";
 
 service Player {
     rpc Stream (reflexpb.StreamRequest) returns (stream reflexpb.Event) {}
-    rpc GetRoundParts(GetRoundReq) returns (GetRoundRes) {}
+    rpc GetRoundParts(GetRoundReq) returns (RoundInfo) {}
 }
 
 message GetRoundReq {
     int64 round_id = 1;
 }
 
-message GetRoundRes {
+message RoundInfo {
     int64 rank = 1;
-    repeated PlayerParts parts = 2;
+    repeated PartInfo parts = 2;
 }
 
-message PlayerParts {
+message PartInfo {
     string player = 1;
     int64 part = 2;
 }
