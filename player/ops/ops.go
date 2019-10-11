@@ -8,8 +8,8 @@ func RunLoops(c config.Config, backends Backends) {
 	// Add loops to run here!
 	// e.g. go JoinRoundsForever()
 	go StartMatchForever(backends, c)
-	go ConsumeMatchEventsForever(c, backends)
-	go StartRoundsForever(c, backends)
+	go ConsumeMatchEventsForever(backends, c)
+	go StartRoundsForever(backends, c)
 	go ConsumeRoundCollectEventsForever(c, backends)
 	go JoinRoundsForever(c, backends)
 	go CollectRoundsForever(c, backends)

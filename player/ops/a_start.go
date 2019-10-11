@@ -16,8 +16,6 @@ import (
 	"github.com/luno/reflex"
 )
 
-const startCursor = "start_events"
-
 //Check for number of rounds not in RoundEnded state, if == 0, try to start a match
 func StartMatchForever(b Backends, c config.Config) {
 	for {
@@ -53,13 +51,15 @@ func maybeStartMatch(b Backends, c config.Config) error {
 }
 
 //Listen for MatchEnded event, try to start a match
-func ConsumeMatchEventsForever(config config.Config, b Backends) {
+func ConsumeMatchEventsForever(b Backends, c config.Config) {
+	const startCursor = "start_events"
+
 	processMatchEvents := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
 		if !reflex.IsType(event.Type, engine.EventTypeMatchEnded) {
 			return fate.Tempt()
 		}
 
-		return b.EngineClient().StartMatch(ctx, TeamName, len(config.GetAllPlayers()))
+		return b.EngineClient().StartMatch(ctx, TeamName, len(c.GetAllPlayers()))
 	}
 
 	consumer := reflex.NewConsumer(startCursor, processMatchEvents)
@@ -68,7 +68,9 @@ func ConsumeMatchEventsForever(config config.Config, b Backends) {
 }
 
 //Listen for EventTypeRoundJoin event and create a PlayerRound(PR) object
-func StartRoundsForever(config config.Config, b Backends) {
+func StartRoundsForever(b Backends) {
+	const createCursor = "create_rounds"
+
 	processRoundJoinEvents := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
 		if !reflex.IsType(event.Type, engine.EventTypeRoundJoin) {
 			return fate.Tempt()
@@ -82,7 +84,7 @@ func StartRoundsForever(config config.Config, b Backends) {
 		return fate.Tempt()
 	}
 
-	consumer := reflex.NewConsumer(startCursor, processRoundJoinEvents)
+	consumer := reflex.NewConsumer(createCursor, processRoundJoinEvents)
 	consumable := reflex.NewConsumable(b.EngineClient().Stream, cursors.ToStore(b.DB()))
 	unsure.ConsumeForever(unsure.FatedContext, consumable.Consume, consumer)
 }
