@@ -2,7 +2,7 @@ package rounds
 
 import (
 	"github.com/adamhicks/ctrlaltdefeat/player"
-	"github.com/corverroos/unsure/engine/db/events"
+	"github.com/adamhicks/ctrlaltdefeat/player/events"
 	"github.com/luno/shift"
 )
 
@@ -20,6 +20,7 @@ var fsm = shift.NewFSM(events.GetTable()).
 	Build()
 
 type joining struct {
+	RoundID int64
 }
 
 type joined struct {

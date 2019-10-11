@@ -14,6 +14,7 @@ type PartInfo struct {
 
 type PlayerRound struct {
 	ID        int64
+	RoundID   int64
 	Status    int64
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -25,8 +26,8 @@ func (prs PlayerRoundStatus) Enum() int {
 	return int(prs)
 }
 
-func (aus PlayerRoundStatus) ReflexType() int {
-	return attachmentUploadReflex[aus].ReflexType()
+func (prs PlayerRoundStatus) ReflexType() int {
+	return prs.ReflexType()
 }
 
 func (PlayerRoundStatus) ShiftStatus() {
@@ -42,15 +43,5 @@ var (
 	PlayerRoundStatusRoundSubmitting PlayerRoundStatus = 6
 	PlayerRoundStatusRoundSubmitted  PlayerRoundStatus = 7
 	PlayerRoundStatusRoundEnded      PlayerRoundStatus = 8
+	PlayerRoundStatusSentinel        PlayerRoundStatus = 9
 )
-
-// attachmentUploadReflex maps AttachmentUploadStatus types to reflex EventTypes.
-var attachmentUploadReflex = map[PlayerRoundStatus]EventType{
-	PlayerRoundStatusRoundJoined:     EventTypePlayerRoundJoined,
-	PlayerRoundStatusRoundExcluded:   EventTypePlayerRoundExcluded,
-	PlayerRoundStatusRoundJoining:    EventTypePlayerRoundJoining,
-	PlayerRoundStatusRoundCollecting: EventTypePlayerRoundCollecting,
-	PlayerRoundStatusRoundCollected:  EventTypePlayerRoundCollected,
-	PlayerRoundStatusRoundSubmitting: EventTypePlayerRoundSubmitting,
-	PlayerRoundStatusRoundEnded:      EventTypePlayerRoundEnded,
-}

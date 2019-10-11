@@ -16,7 +16,7 @@ var table = rsql.NewEventsTableInt(tableName)
 
 // Insert creates a attachment_upload_events record in the db.
 func Insert(ctx context.Context, tx *sql.Tx, foreignID int64,
-	typ player.EventType) (func(), error) {
+	typ player.PlayerRoundStatus) (func(), error) {
 
 	return table.Insert(ctx, tx, foreignID, typ)
 }

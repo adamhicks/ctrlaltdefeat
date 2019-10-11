@@ -9,8 +9,8 @@ import (
 
 // Call FSM functions here.
 
-func Joining(ctx context.Context, dbc *sql.DB) (int64, error) {
-	return fsm.Insert(ctx, dbc, joining{})
+func Joining(ctx context.Context, dbc *sql.DB, roundID int64) (int64, error) {
+	return fsm.Insert(ctx, dbc, joining{RoundID: roundID})
 }
 
 func Excluded(ctx context.Context, dbc *sql.DB, id int64) error {
