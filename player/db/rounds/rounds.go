@@ -15,8 +15,8 @@ func Joining(ctx context.Context, dbc *sql.DB, roundID int64) (int64, error) {
 	return fsm.Insert(ctx, dbc, joining{RoundID: roundID})
 }
 
-func Excluded(ctx context.Context, dbc *sql.DB, id int64) error {
-	return fsm.Update(ctx, dbc, player.PlayerRoundStatusRoundJoining,
+func Excluded(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
+	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundJoining,
 		player.PlayerRoundStatusRoundExcluded, excluded{ID: id})
 }
 

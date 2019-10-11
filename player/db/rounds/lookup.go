@@ -50,3 +50,11 @@ func LookupRound(ctx context.Context, dbc dbc, roundID int) (player.PlayerRound,
 	}
 	return *r, nil
 }
+
+func LookupRoundAndStatus(ctx context.Context, dbc dbc, roundID int64, s player.PlayerRoundStatus) (player.PlayerRound, error) {
+	r, err := lookupWhere(ctx, dbc, "round_id=? and status=?", roundID, s)
+	if err != nil {
+		return player.PlayerRound{}, err
+	}
+	return *r, nil
+}

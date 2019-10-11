@@ -36,9 +36,9 @@ func (PlayerRoundStatus) ShiftStatus() {
 
 var (
 	PlayerRoundStatusUnknown         PlayerRoundStatus = 0
+	PlayerRoundStatusRoundJoining    PlayerRoundStatus = 1
 	PlayerRoundStatusRoundJoined     PlayerRoundStatus = 2
 	PlayerRoundStatusRoundExcluded   PlayerRoundStatus = 3
-	PlayerRoundStatusRoundJoining    PlayerRoundStatus = 1
 	PlayerRoundStatusRoundCollecting PlayerRoundStatus = 4
 	PlayerRoundStatusRoundCollected  PlayerRoundStatus = 5
 	PlayerRoundStatusRoundSubmitting PlayerRoundStatus = 6
