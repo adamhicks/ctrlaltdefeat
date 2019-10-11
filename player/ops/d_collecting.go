@@ -19,7 +19,7 @@ import (
 //CollectRoundsForever
 //Get PRs with state RoundCollecting, get the round parts, try and fetch missing data, or if complete transition to RoundCollected
 
-func CollectRoundsForever(c config.Config, backends Backends) error {
+func CollectRoundsForever(c config.Config, backends Backends) {
 	dbc := backends.DB()
 	ctx := unsure.FatedContext()
 	ec := backends.EngineClient()
@@ -34,20 +34,20 @@ func CollectRoundsForever(c config.Config, backends Backends) error {
 			res, err := ec.CollectRound(ctx, TeamName, me, r.RoundID)
 			if err != nil {
 				log.Error(ctx, errors.Wrap(err, "Failed to CollectRound"), log.WithLevel(log.LevelInfo))
-				break
+				continue
 			}
 			if err = storeCollected(c, dbc, ctx, res, int(r.RoundID), me); err != nil {
 				log.Error(ctx, errors.Wrap(err, "Failed to storeCollected"), log.WithLevel(log.LevelInfo))
-				break
+				continue
 			}
 			tx, err := dbc.Begin()
 			if err != nil {
 				log.Error(ctx, errors.Wrap(err, "Failed to begin transaction"), log.WithLevel(log.LevelInfo))
-				break
+				continue
 			}
 			if err = setCollected(ctx, tx, r.ID); err != nil {
 				log.Error(ctx, errors.Wrap(err, "Failed setCollected"), log.WithLevel(log.LevelInfo))
-				break
+				continue
 			}
 
 		}
@@ -76,6 +76,7 @@ func storeCollected(c config.Config, dbc *sql.DB, ctx context.Context, res *engi
 }
 
 func setCollected(ctx context.Context, tx *sql.Tx, id int64) error {
+	defer tx.Rollback()
 	notify, err := rounds.Collected(ctx, tx, id)
 	if err != nil {
 		return err
