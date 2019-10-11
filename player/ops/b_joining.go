@@ -59,8 +59,7 @@ func JoinRoundsForever(p config.Config, b Backends) {
 		return fate.Tempt()
 	}
 
-	cli := b.GetPlayerClient(p.GetMe().Name)
 	consumer := reflex.NewConsumer(roundJoiningConsumer, f)
-	consumable := reflex.NewConsumable(cli.Stream, cursors.ToStore(b.DB()))
+	consumable := reflex.NewConsumable(b.EngineClient().Stream, cursors.ToStore(b.DB()))
 	unsure.ConsumeForever(unsure.FatedContext, consumable.Consume, consumer)
 }
