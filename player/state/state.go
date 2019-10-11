@@ -21,7 +21,9 @@ func (s *State) DB() *sql.DB {
 }
 
 func New() (*State, error) {
-	dbc, err := db.Connect()
+	// TODO: Sergio: Get player id from somewhere
+	p := "PLAYER OR INSTANCE ID HERE"
+	dbc, err := db.Connect(p)
 	if err != nil {
 		return nil, err
 	}
