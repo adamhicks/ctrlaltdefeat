@@ -10,15 +10,11 @@ func RunLoops(c config.Config, backends Backends) {
 	go StartMatchForever(backends, c)
 	go ConsumeMatchEventsForever(backends, c)
 	go StartRoundsForever(backends)
-
 	go JoinRoundsForever(backends, c)
-
 	go ConsumeRoundCollectEventsForever(backends)
-
 	go CollectRoundsForever(backends, c)
-
 	go SubmitRoundsForever(backends, c)
 	go ConsumeRoundSubmitsForever(backends, c)
-
 	go ConsumeMatchEndedForever(backends)
+	go ConsumeRoundEndedForever(c, backends)
 }
