@@ -17,31 +17,32 @@ import (
 //Get PRs with state RoundCollecting, get the round parts, try and fetch missing data, or if complete transition to RoundCollected
 
 func CollectRoundsForever(c config.Config, backends Backends) error {
-	dbc := *backends.DB()
+	dbc := backends.DB()
 	ctx := unsure.FatedContext()
 	ec := backends.EngineClient()
 	me := c.GetMe().Name
-	rs, err := rounds.ListWithStatus(ctx, dbc, player.PlayerRoundStatusRoundCollecting)
-	if err != nil {
-		return err
-	}
-	if rs != nil {
-		for _, r := range rs {
-			res, err := ec.CollectRound(ctx, TeamName, me, r.RoundID)
-			if err != nil {
-				return err
-			}
-			if err = storeCollected(c, dbc, ctx, res, int(r.RoundID), me); err != nil {
-				return err
-			}
-
+	for {
+		rs, err := rounds.ListWithStatus(ctx, *dbc, player.PlayerRoundStatusRoundCollecting)
+		if err != nil {
+			return err
 		}
+		if rs != nil {
+			for _, r := range rs {
+				res, err := ec.CollectRound(ctx, TeamName, me, r.RoundID)
+				if err != nil {
+					return err
+				}
+				if err = storeCollected(c, dbc, ctx, res, int(r.RoundID), me); err != nil {
+					return err
+				}
+
+			}
+		}
+		time.Sleep(time.Millisecond * 500)
 	}
-	time.Sleep(time.Millisecond * 500)
-	return nil
 }
 
-func storeCollected(c config.Config, dbc sql.DB, ctx context.Context, res *engine.CollectRoundRes, roundID int, me string) error {
+func storeCollected(c config.Config, dbc *sql.DB, ctx context.Context, res *engine.CollectRoundRes, roundID int, me string) error {
 	rank := int64(res.Rank)
 	p1Part, p2Part, p3Part, p4Part := 0, 0, 0, 0
 	allPlayers := c.GetAllPlayers()
@@ -57,6 +58,6 @@ func storeCollected(c config.Config, dbc sql.DB, ctx context.Context, res *engin
 			p4Part = p.Part
 		}
 	}
-	_, err := partsdb.InsertRoundParts(ctx, &dbc, roundID, me, rank, int64(p1Part), int64(p2Part), int64(p3Part), int64(p4Part))
+	_, err := partsdb.InsertRoundParts(ctx, dbc, roundID, me, rank, int64(p1Part), int64(p2Part), int64(p3Part), int64(p4Part))
 	return err
 }
