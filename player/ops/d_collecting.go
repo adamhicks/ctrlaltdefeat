@@ -3,6 +3,7 @@ package ops
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/adamhicks/ctrlaltdefeat/player"
 	"github.com/adamhicks/ctrlaltdefeat/player/config"
@@ -36,6 +37,8 @@ func CollectRoundsForever(c config.Config, backends Backends) error {
 
 		}
 	}
+	time.Sleep(time.Millisecond * 500)
+	return nil
 }
 
 func storeCollected(c config.Config, dbc sql.DB, ctx context.Context, res *engine.CollectRoundRes, roundID int, me string) error {
