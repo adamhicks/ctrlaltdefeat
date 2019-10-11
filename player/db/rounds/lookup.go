@@ -7,7 +7,7 @@ import (
 	"github.com/adamhicks/ctrlaltdefeat/player"
 )
 
-func ListWithStatus(ctx context.Context, dbc sql.DB, s player.PlayerRoundStatus) ([]player.PlayerRound, error) {
+func ListWithStatus(ctx context.Context, dbc *sql.DB, s player.PlayerRoundStatus) ([]player.PlayerRound, error) {
 	rows, err := dbc.QueryContext(ctx, selectPrefix+"status=?", s.Enum())
 	if err != nil {
 		return nil, err
