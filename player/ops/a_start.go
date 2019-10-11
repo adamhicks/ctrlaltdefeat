@@ -46,8 +46,6 @@ func StartMatchForever(config config.Config, b Backends) {
 
 //Listen for MatchEnded event, try to start a match
 func ConsumeMatchEventsForever(config config.Config, b Backends) {
-	cli := b.GetPlayerClient(config.GetMe().Name)
-
 	processMatchEvents := func (ctx context.Context, fate fate.Fate, event *reflex.Event) error {
 		if !reflex.IsType(event.Type, engine.EventTypeMatchEnded) {
 		return fate.Tempt()
@@ -57,15 +55,13 @@ func ConsumeMatchEventsForever(config config.Config, b Backends) {
 	}
 
 	consumer := reflex.NewConsumer(startCursor, processMatchEvents)
-	consumable := reflex.NewConsumable(cli.Stream, cursors.ToStore(b.DB()))
+	consumable := reflex.NewConsumable(b.EngineClient().Stream, cursors.ToStore(b.DB()))
 	unsure.ConsumeForever(unsure.FatedContext, consumable.Consume, consumer)
 }
 
 
 //Listen for EventTypeRoundJoin event and create a PlayerRound(PR) object
 func StartRoundsForever(config config.Config, b Backends) {
-	cli := b.GetPlayerClient(config.GetMe().Name)
-
 	processRoundJoinEvents := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
 		if !reflex.IsType(event.Type, engine.EventTypeRoundJoin) {
 			return fate.Tempt()
@@ -80,6 +76,6 @@ func StartRoundsForever(config config.Config, b Backends) {
 	}
 
 	consumer := reflex.NewConsumer(startCursor, processRoundJoinEvents)
-	consumable := reflex.NewConsumable(cli.Stream, cursors.ToStore(b.DB()))
+	consumable := reflex.NewConsumable(b.EngineClient().Stream, cursors.ToStore(b.DB()))
 	unsure.ConsumeForever(unsure.FatedContext, consumable.Consume, consumer)
 }
