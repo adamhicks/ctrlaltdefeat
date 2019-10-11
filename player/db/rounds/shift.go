@@ -13,7 +13,7 @@ var fsm = shift.NewFSM(events.GetTable()).
 		player.PlayerRoundStatusRoundJoined, player.PlayerRoundStatusRoundExcluded).
 	Update(player.PlayerRoundStatusRoundExcluded, excluded{}, player.PlayerRoundStatusRoundEnded).
 	Update(player.PlayerRoundStatusRoundJoined, joined{}, player.PlayerRoundStatusRoundCollecting).
-	Update(player.PlayerRoundStatusRoundCollecting, collecting{}, player.PlayerRoundStatusRoundCollected.
+	Update(player.PlayerRoundStatusRoundCollecting, collecting{}, player.PlayerRoundStatusRoundCollected).
 	Update(player.PlayerRoundStatusRoundCollected, collected{}, player.PlayerRoundStatusRoundSubmitting).
 	Update(player.PlayerRoundStatusRoundSubmitting, submitting{}, player.PlayerRoundStatusRoundSubmitted).
 	Update(player.PlayerRoundStatusRoundSubmitted, submitted{}, player.PlayerRoundStatusRoundEnded).
