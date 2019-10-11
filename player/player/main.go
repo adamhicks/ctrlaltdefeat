@@ -18,15 +18,15 @@ var playerIdx = flag.Int("player_idx", 0, "the index into player array for this 
 func main() {
 	unsure.Bootstrap()
 
-	p := config.GetPlayer(*playerIdx)
+	c := config.New(*playerIdx)
 
-	s, err := state.New(p, config.GetAllPlayers())
+	s, err := state.New(c)
 	if err != nil {
 		unsure.Fatal(errors.Wrap(err, "new state error"))
 	}
 
-	serveGRPCForever(p, s)
-	ops.RunLoops(p, s)
+	serveGRPCForever(c.GetMe(), s)
+	ops.RunLoops(c, s)
 
 	unsure.WaitForShutdown()
 }

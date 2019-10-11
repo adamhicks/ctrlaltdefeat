@@ -34,7 +34,10 @@ func (s *State) GetPlayerClient(playerName string) player.Client {
 	return c
 }
 
-func New(me config.Player, all []config.Player) (*State, error) {
+func New(c config.Config) (*State, error) {
+	me := c.GetMe()
+	all := c.GetAllPlayers()
+
 	dbc, err := db.Connect(me.Name)
 	if err != nil {
 		return nil, err
