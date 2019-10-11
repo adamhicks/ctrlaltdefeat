@@ -34,5 +34,12 @@ func (c Config) GetAllPlayers() []Player {
 }
 
 func (c Config) GetMe() Player {
-	return c.all[c.me]
+	return c.GetPlayer(c.me)
+}
+
+func (c Config) GetPlayer(idx int) Player {
+	if idx < 0 || idx >= len(players) {
+		panic(fmt.Sprintf("invalid player index %d", idx))
+	}
+	return c.all[idx]
 }

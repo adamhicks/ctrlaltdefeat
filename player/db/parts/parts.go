@@ -25,6 +25,6 @@ func InsertRoundParts(ctx context.Context, dbc *sql.DB, roundId int, playerId st
 	return id, tx.Commit()
 }
 
-func GetRoundParts(ctx context.Context, dbc *sql.DB, roundId int, playerId int) ([]RoundParts, error) {
+func GetRoundParts(ctx context.Context, dbc *sql.DB, roundId int) ([]RoundParts, error) {
 	return listWhere(ctx, dbc, "round_id=?", roundId)
 }
