@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/adamhicks/ctrlaltdefeat/player/config"
+	"github.com/adamhicks/ctrlaltdefeat/player/ops"
 	"github.com/adamhicks/ctrlaltdefeat/player/playerpb"
 	"github.com/adamhicks/ctrlaltdefeat/player/server"
 	"github.com/adamhicks/ctrlaltdefeat/player/state"
@@ -25,6 +26,7 @@ func main() {
 	}
 
 	serveGRPCForever(p, s)
+	ops.RunLoops(p, s)
 
 	unsure.WaitForShutdown()
 }
