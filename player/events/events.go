@@ -12,9 +12,7 @@ import (
 
 const tableName = "player_rounds_events"
 
-var table = rsql.NewEventsTableInt(tableName,
-	rsql.WithEventsCacheEnabled(),
-	rsql.WithEventsNotifier(beepwrap.New(tableName)))
+var table = rsql.NewEventsTableInt(tableName)
 
 // Insert creates a attachment_upload_events record in the db.
 func Insert(ctx context.Context, tx *sql.Tx, foreignID int64,
