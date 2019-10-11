@@ -5,10 +5,11 @@ import (
 
 	"github.com/adamhicks/ctrlaltdefeat/player/config"
 	"github.com/adamhicks/ctrlaltdefeat/player/db/cursors"
+	"github.com/adamhicks/ctrlaltdefeat/player/db/rounds"
 	"github.com/corverroos/unsure"
+	"github.com/corverroos/unsure/engine"
 	"github.com/luno/fate"
 	"github.com/luno/reflex"
-	"github.com/prometheus/common/log"
 )
 
 const joinedCursor = "joined_events"
@@ -16,22 +17,30 @@ const joinedCursor = "joined_events"
 //ConsumeRoundCollectEventsForever
 //Listen for EventTypeRoundCollect, get the PR, transition to RoundCollecting
 func ConsumeRoundCollectEventsForever(c config.Config, b Backends) {
-	for _, p := range c.GetAllPlayers() {
-		if p == c.GetMe() {
-			continue
-		}
-		go consumePlayerCollects(p.Name, b)
-	}
-}
+	cli := b.EngineClient()
 
-func consumePlayerCollects(p string, b Backends) {
-	cli := b.GetPlayerClient(p)
-	consumer := reflex.NewConsumer(joinedCursor, processRoundEvents)
+	f := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
+		if event.Type != engine.EventTypeRoundCollect {
+			return nil
+		}
+		r, err := rounds.LookupRound(ctx, b.DB(), int(event.ForeignIDInt()))
+		if err != nil {
+			return err
+		}
+		tx, err := b.DB().Begin()
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		notify, err := rounds.Collecting(ctx, tx, r.ID)
+		if err != nil {
+			return err
+		}
+		defer notify()
+		return tx.Commit()
+	}
+
+	consumer := reflex.NewConsumer(joinedCursor, f)
 	consumable := reflex.NewConsumable(cli.Stream, cursors.ToStore(b.DB()))
 	unsure.ConsumeForever(unsure.FatedContext, consumable.Consume, consumer)
-}
-
-func processRoundEvents(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
-	log.Info("Got an event")
-	return nil
 }
