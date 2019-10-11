@@ -16,12 +16,7 @@ var (
 		"player DB URI")
 )
 
-type PlayerDB struct {
-	DB        *sql.DB
-	ReplicaDB *sql.DB
-}
-
-func Connect(p string) (*PlayerDB, error) {
+func Connect(p string) (*sql.DB, error) {
 	uri := *dbURI + p + "?"
 
 	ok, err := unsure.MaybeRecreateSchema(uri, getSchemaPath())
@@ -31,14 +26,7 @@ func Connect(p string) (*PlayerDB, error) {
 		log.Info(nil, "recreated schema")
 	}
 
-	dbc, err := unsure.Connect(uri)
-	if err != nil {
-		return nil, err
-	}
-	return &PlayerDB{
-		DB:        dbc,
-		ReplicaDB: dbc,
-	}, nil
+	return unsure.Connect(uri)
 }
 
 func ConnectForTesting(t *testing.T) *sql.DB {

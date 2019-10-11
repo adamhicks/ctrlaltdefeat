@@ -25,8 +25,8 @@ func main() {
 		unsure.Fatal(errors.Wrap(err, "new state error"))
 	}
 
-	serveGRPCForever(c, s)
-	ops.RunLoops(c, s)
+	go serveGRPCForever(c, s)
+	ops.RunLoops(s, c)
 
 	unsure.WaitForShutdown()
 }

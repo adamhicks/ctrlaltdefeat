@@ -25,7 +25,7 @@ func ListWithStatus(ctx context.Context, dbc *sql.DB, s player.PlayerRoundStatus
 	return rounds, nil
 }
 
-func ListWithStatusNot(ctx context.Context, dbc sql.DB, s player.PlayerRoundStatus) ([]player.PlayerRound, error) {
+func ListWithStatusNot(ctx context.Context, dbc *sql.DB, s player.PlayerRoundStatus) ([]player.PlayerRound, error) {
 	rows, err := dbc.QueryContext(ctx, selectPrefix+"status<>?", s.Enum())
 	if err != nil {
 		return nil, err

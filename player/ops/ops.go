@@ -1,12 +1,16 @@
 package ops
 
-import "github.com/adamhicks/ctrlaltdefeat/player/config"
+import (
+	"github.com/adamhicks/ctrlaltdefeat/player/config"
+	"github.com/prometheus/common/log"
+)
 
 const TeamName = "CtrlAltDefeat"
 
-func RunLoops(c config.Config, backends Backends) {
+func RunLoops(backends Backends, c config.Config) {
 	// Add loops to run here!
 	// e.g. go JoinRoundsForever()
+	log.Info(nil, "Starting background loops")
 	go StartMatchForever(backends, c)
 	go ConsumeMatchEventsForever(backends, c)
 	go StartRoundsForever(backends)

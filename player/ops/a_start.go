@@ -28,7 +28,7 @@ func StartMatchForever(b Backends, c config.Config) {
 }
 
 func maybeStartMatch(b Backends, c config.Config) error {
-	ongoingRounds, err := rounds.ListWithStatusNot(unsure.FatedContext(), *b.DB(), player.PlayerRoundStatusRoundEnded)
+	ongoingRounds, err := rounds.ListWithStatusNot(unsure.FatedContext(), b.DB(), player.PlayerRoundStatusRoundEnded)
 	if err != nil {
 		return err
 	}

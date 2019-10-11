@@ -59,7 +59,7 @@ func New(c config.Config) (*State, error) {
 
 	return &State{
 		engineClient:  engineClient,
-		dbc:           dbc.DB,
+		dbc:           dbc,
 		playerClients: playerClients,
 	}, nil
 }

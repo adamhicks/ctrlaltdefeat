@@ -11,7 +11,7 @@ import (
 
 const tableName = "player_rounds_events"
 
-var table = rsql.NewEventsTableInt(tableName, rsql.WithEventForeignIDField("round_id"))
+var table = rsql.NewEventsTableInt(tableName)
 
 func Insert(ctx context.Context, tx *sql.Tx, foreignID int64,
 	typ player.PlayerRoundStatus) (func(), error) {

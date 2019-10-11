@@ -7,15 +7,16 @@ import (
 	"database/sql"
 	"strings"
 	"time"
+
 	"github.com/luno/jettison/errors"
 	"github.com/luno/jettison/j"
 	"github.com/luno/shift"
 )
 
-// Insert inserts a new player_rounds table entity. All the fields of the 
-// joining receiver are set, as well as status, created_at and updated_at. 
+// Insert inserts a new player_rounds table entity. All the fields of the
+// joining receiver are set, as well as status, created_at and updated_at.
 // The newly created entity id is returned on success or an error.
-func (一 joining) Insert(ctx context.Context, tx *sql.Tx,st shift.Status) (int64, error) {
+func (一 joining) Insert(ctx context.Context, tx *sql.Tx, st shift.Status) (int64, error) {
 	var (
 		q    strings.Builder
 		args []interface{}
@@ -40,9 +41,9 @@ func (一 joining) Insert(ctx context.Context, tx *sql.Tx,st shift.Status) (int6
 }
 
 // Update updates the status of a player_rounds table entity. All the fields of the
-// joined receiver are updated, as well as status and updated_at. 
+// joined receiver are updated, as well as status and updated_at.
 // The entity id is returned on success or an error.
-func (一 joined) Update(ctx context.Context, tx *sql.Tx,from shift.Status, 
+func (一 joined) Update(ctx context.Context, tx *sql.Tx, from shift.Status,
 	to shift.Status) (int64, error) {
 	var (
 		q    strings.Builder
@@ -71,9 +72,9 @@ func (一 joined) Update(ctx context.Context, tx *sql.Tx,from shift.Status,
 }
 
 // Update updates the status of a player_rounds table entity. All the fields of the
-// excluded receiver are updated, as well as status and updated_at. 
+// excluded receiver are updated, as well as status and updated_at.
 // The entity id is returned on success or an error.
-func (一 excluded) Update(ctx context.Context, tx *sql.Tx,from shift.Status, 
+func (一 excluded) Update(ctx context.Context, tx *sql.Tx, from shift.Status,
 	to shift.Status) (int64, error) {
 	var (
 		q    strings.Builder
@@ -102,9 +103,9 @@ func (一 excluded) Update(ctx context.Context, tx *sql.Tx,from shift.Status,
 }
 
 // Update updates the status of a player_rounds table entity. All the fields of the
-// collecting receiver are updated, as well as status and updated_at. 
+// collecting receiver are updated, as well as status and updated_at.
 // The entity id is returned on success or an error.
-func (一 collecting) Update(ctx context.Context, tx *sql.Tx,from shift.Status, 
+func (一 collecting) Update(ctx context.Context, tx *sql.Tx, from shift.Status,
 	to shift.Status) (int64, error) {
 	var (
 		q    strings.Builder
@@ -133,9 +134,9 @@ func (一 collecting) Update(ctx context.Context, tx *sql.Tx,from shift.Status,
 }
 
 // Update updates the status of a player_rounds table entity. All the fields of the
-// collected receiver are updated, as well as status and updated_at. 
+// collected receiver are updated, as well as status and updated_at.
 // The entity id is returned on success or an error.
-func (一 collected) Update(ctx context.Context, tx *sql.Tx,from shift.Status, 
+func (一 collected) Update(ctx context.Context, tx *sql.Tx, from shift.Status,
 	to shift.Status) (int64, error) {
 	var (
 		q    strings.Builder
@@ -164,9 +165,9 @@ func (一 collected) Update(ctx context.Context, tx *sql.Tx,from shift.Status,
 }
 
 // Update updates the status of a player_rounds table entity. All the fields of the
-// submitting receiver are updated, as well as status and updated_at. 
+// submitting receiver are updated, as well as status and updated_at.
 // The entity id is returned on success or an error.
-func (一 submitting) Update(ctx context.Context, tx *sql.Tx,from shift.Status, 
+func (一 submitting) Update(ctx context.Context, tx *sql.Tx, from shift.Status,
 	to shift.Status) (int64, error) {
 	var (
 		q    strings.Builder
@@ -195,9 +196,9 @@ func (一 submitting) Update(ctx context.Context, tx *sql.Tx,from shift.Status,
 }
 
 // Update updates the status of a player_rounds table entity. All the fields of the
-// submitted receiver are updated, as well as status and updated_at. 
+// submitted receiver are updated, as well as status and updated_at.
 // The entity id is returned on success or an error.
-func (一 submitted) Update(ctx context.Context, tx *sql.Tx,from shift.Status, 
+func (一 submitted) Update(ctx context.Context, tx *sql.Tx, from shift.Status,
 	to shift.Status) (int64, error) {
 	var (
 		q    strings.Builder
