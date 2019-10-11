@@ -1,4 +1,4 @@
-package roundsdb
+package rounds
 
 import (
 	partsdb "github.com/adamhicks/ctrlaltdefeat/player/db/parts"
