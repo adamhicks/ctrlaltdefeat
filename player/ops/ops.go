@@ -8,5 +8,6 @@ func RunLoops(c config.Config, backends Backends) {
 	// Add loops to run here!
 	go ConsumeRoundCollectEventsForever(c, backends)
 	go CollectRoundsForever(c, backends)
-
+	go SubmitRoundsForever(backends, c)
+	go ConsumeRoundSubmitsForever(backends, c)
 }
