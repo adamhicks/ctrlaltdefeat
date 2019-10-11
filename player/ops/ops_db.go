@@ -16,8 +16,9 @@ func GetPlayerPart(
 	if err != nil {
 		return player.RoundInfo{}, err
 	}
+	me := c.GetMe()
 	for _, p := range parts {
-		if p.Player == playerName {
+		if p.Player == me.Name {
 			return p, nil
 		}
 	}
