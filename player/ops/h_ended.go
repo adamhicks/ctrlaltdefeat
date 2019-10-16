@@ -3,10 +3,9 @@ package ops
 import (
 	"context"
 
+	"github.com/adamhicks/ctrlaltdefeat/player/db/cursors"
 	partsdb "github.com/adamhicks/ctrlaltdefeat/player/db/parts"
 	"github.com/adamhicks/ctrlaltdefeat/player/db/rounds"
-
-	"github.com/adamhicks/ctrlaltdefeat/player/db/cursors"
 	"github.com/corverroos/unsure"
 	"github.com/corverroos/unsure/engine"
 	"github.com/luno/fate"

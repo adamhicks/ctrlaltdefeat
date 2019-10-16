@@ -60,3 +60,16 @@ func GetPlayerParts(ctx context.Context, c config.Config, dbc *sql.DB, roundID i
 	}
 	return rounds, nil
 }
+
+func CalcTotal(p config.Player, roundInfos []player.RoundInfo) int64 {
+	var sum int64
+	for _, info := range roundInfos {
+		for _, part := range info.Parts {
+			if part.Player == p.Name {
+				sum += part.Part
+				break
+			}
+		}
+	}
+	return sum
+}

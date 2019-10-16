@@ -19,4 +19,5 @@ func RunLoops(backends Backends, c config.Config) {
 	go ConsumeRoundSubmitsForever(backends, c)
 	go ConsumeMatchEndedForever(backends)
 	go ConsumeRoundEndedForever(c, backends)
+	go ConsumeSubmittingForever(backends, c)
 }

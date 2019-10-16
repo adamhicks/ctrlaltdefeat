@@ -8,8 +8,6 @@ import (
 	"github.com/corverroos/unsure"
 	"github.com/corverroos/unsure/engine"
 	"github.com/luno/fate"
-	"github.com/luno/jettison/j"
-	"github.com/luno/jettison/log"
 	"github.com/luno/reflex"
 )
 
@@ -28,7 +26,6 @@ func ConsumeRoundCollectEventsForever(b Backends) {
 		if err != nil {
 			return err
 		}
-		log.Info(nil, "got status", j.KV("status", r.Status))
 		tx, err := b.DB().Begin()
 		if err != nil {
 			return err
