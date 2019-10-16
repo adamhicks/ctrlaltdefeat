@@ -7,19 +7,19 @@ import (
 )
 
 const cols = " `id`, `round_id`, `player_id`, `rank`, `p1_part`, `p2_part`, `p3_part`, `p4_part` "
-const selectPrefix = "select " + cols + " from player_rounds where "
+const selectPrefix = "select " + cols + " from round_parts where "
 
 func Lookup(ctx context.Context, dbc dbc, id int64) (*RoundParts, error) {
 	return lookupWhere(ctx, dbc, "id=?", id)
 }
 
-// lookupWhere queries the player_rounds table with the provided where clause, then scans
+// lookupWhere queries the round_parts table with the provided where clause, then scans
 // and returns a single row.
 func lookupWhere(ctx context.Context, dbc dbc, where string, args ...interface{}) (*RoundParts, error) {
 	return scan(dbc.QueryRowContext(ctx, selectPrefix+where, args...))
 }
 
-// listWhere queries the player_rounds table with the provided where clause, then scans
+// listWhere queries the round_parts table with the provided where clause, then scans
 // and returns all the rows.
 func listWhere(ctx context.Context, dbc dbc, where string, args ...interface{}) ([]RoundParts, error) {
 

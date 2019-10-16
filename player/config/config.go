@@ -33,6 +33,14 @@ func (c Config) GetAllPlayers() []Player {
 	return c.all
 }
 
+func (c Config) GetPlayerCount() int {
+	return len(c.all)
+}
+
+func (c Config) GetTeam() string {
+	return "CtrlAltDefeat"
+}
+
 func (c Config) GetMe() Player {
 	return c.GetPlayer(c.me)
 }

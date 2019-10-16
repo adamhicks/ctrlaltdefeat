@@ -30,10 +30,19 @@ func GetPlayerParts(ctx context.Context, c config.Config, dbc *sql.DB, roundID i
 	if err != nil {
 		return nil, err
 	}
-	p1 := c.GetPlayer(0)
-	p2 := c.GetPlayer(1)
-	p3 := c.GetPlayer(2)
-	p4 := c.GetPlayer(3)
+	var p1, p2, p3, p4 config.Player
+	if c.GetPlayerCount() > 0 {
+		p1 = c.GetPlayer(0)
+	}
+	if c.GetPlayerCount() > 1 {
+		p2 = c.GetPlayer(1)
+	}
+	if c.GetPlayerCount() > 2 {
+		p3 = c.GetPlayer(2)
+	}
+	if c.GetPlayerCount() > 3 {
+		p4 = c.GetPlayer(3)
+	}
 
 	var rounds []player.RoundInfo
 	for _, p := range parts {

@@ -29,7 +29,7 @@ func JoinRoundsForever(b Backends, c config.Config) {
 			return err
 		}
 
-		joined, err := b.EngineClient().JoinRound(ctx, TeamName, c.GetMe().Name, pr.RoundID)
+		joined, err := b.EngineClient().JoinRound(ctx, c.GetTeam(), c.GetMe().Name, pr.RoundID)
 		if err != nil {
 			return err
 		}

@@ -8,6 +8,8 @@ import (
 	"github.com/corverroos/unsure"
 	"github.com/corverroos/unsure/engine"
 	"github.com/luno/fate"
+	"github.com/luno/jettison/j"
+	"github.com/luno/jettison/log"
 	"github.com/luno/reflex"
 )
 
@@ -19,13 +21,14 @@ func ConsumeRoundCollectEventsForever(b Backends) {
 	cli := b.EngineClient()
 
 	f := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
-		if event.Type != engine.EventTypeRoundCollect {
+		if event.Type.ReflexType() != engine.EventTypeRoundCollect.ReflexType() {
 			return nil
 		}
 		r, err := rounds.LookupRound(ctx, b.DB(), int(event.ForeignIDInt()))
 		if err != nil {
 			return err
 		}
+		log.Info(nil, "got status", j.KV("status", r.Status))
 		tx, err := b.DB().Begin()
 		if err != nil {
 			return err

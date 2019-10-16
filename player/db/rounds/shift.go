@@ -6,43 +6,24 @@ import (
 	"github.com/luno/shift"
 )
 
-//go:generate shiftgen -inserter=joining -updaters=joined,excluded,collecting,collected,submitting,submitted  -table=player_rounds
+//go:generate shiftgen -inserter=joining -updaters=updateRound  -table=player_rounds
 
 var fsm = shift.NewFSM(events.GetTable()).
 	Insert(player.PlayerRoundStatusRoundJoining, joining{},
 		player.PlayerRoundStatusRoundJoined, player.PlayerRoundStatusRoundExcluded).
-	Update(player.PlayerRoundStatusRoundExcluded, excluded{}, player.PlayerRoundStatusRoundEnded).
-	Update(player.PlayerRoundStatusRoundJoined, joined{}, player.PlayerRoundStatusRoundCollecting).
-	Update(player.PlayerRoundStatusRoundCollecting, collecting{}, player.PlayerRoundStatusRoundCollected).
-	Update(player.PlayerRoundStatusRoundCollected, collected{}, player.PlayerRoundStatusRoundSubmitting).
-	Update(player.PlayerRoundStatusRoundSubmitting, submitting{}, player.PlayerRoundStatusRoundSubmitted).
-	Update(player.PlayerRoundStatusRoundSubmitted, submitted{}, player.PlayerRoundStatusRoundEnded).
+	Update(player.PlayerRoundStatusRoundExcluded, updateRound{}, player.PlayerRoundStatusRoundEnded).
+	Update(player.PlayerRoundStatusRoundJoined, updateRound{}, player.PlayerRoundStatusRoundCollecting).
+	Update(player.PlayerRoundStatusRoundCollecting, updateRound{}, player.PlayerRoundStatusRoundCollected).
+	Update(player.PlayerRoundStatusRoundCollected, updateRound{}, player.PlayerRoundStatusRoundSubmitting).
+	Update(player.PlayerRoundStatusRoundSubmitting, updateRound{}, player.PlayerRoundStatusRoundSubmitted).
+	Update(player.PlayerRoundStatusRoundSubmitted, updateRound{}, player.PlayerRoundStatusRoundEnded).
+	Update(player.PlayerRoundStatusRoundEnded, updateRound{}).
 	Build()
 
 type joining struct {
 	RoundID int64
 }
 
-type joined struct {
-	ID int64
-}
-
-type excluded struct {
-	ID int64
-}
-
-type collecting struct {
-	ID int64
-}
-
-type collected struct {
-	ID int64
-}
-
-type submitting struct {
-	ID int64
-}
-
-type submitted struct {
+type updateRound struct {
 	ID int64
 }

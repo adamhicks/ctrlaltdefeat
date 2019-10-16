@@ -5,8 +5,6 @@ import (
 	"github.com/prometheus/common/log"
 )
 
-const TeamName = "CtrlAltDefeat"
-
 func RunLoops(backends Backends, c config.Config) {
 	// Add loops to run here!
 	// e.g. go JoinRoundsForever()

@@ -35,7 +35,7 @@ func maybeStartMatch(b Backends, c config.Config) error {
 	if len(ongoingRounds) == 0 {
 		ctx := unsure.ContextWithFate(context.Background(), unsure.DefaultFateP())
 
-		err := b.EngineClient().StartMatch(ctx, TeamName, len(c.GetAllPlayers()))
+		err := b.EngineClient().StartMatch(ctx, c.GetTeam(), len(c.GetAllPlayers()))
 
 		if errors.Is(err, engine.ErrActiveMatch) {
 			// Match active, just ignore
@@ -59,7 +59,7 @@ func ConsumeMatchEventsForever(b Backends, c config.Config) {
 			return fate.Tempt()
 		}
 
-		return b.EngineClient().StartMatch(ctx, TeamName, len(c.GetAllPlayers()))
+		return b.EngineClient().StartMatch(ctx, c.GetTeam(), len(c.GetAllPlayers()))
 	}
 
 	consumer := reflex.NewConsumer(startCursor, processMatchEvents)

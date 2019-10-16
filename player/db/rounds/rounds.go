@@ -4,9 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/luno/reflex/rsql"
-
 	"github.com/adamhicks/ctrlaltdefeat/player"
+	"github.com/luno/reflex/rsql"
 )
 
 // Call FSM functions here.
@@ -17,42 +16,42 @@ func Joining(ctx context.Context, dbc *sql.DB, roundID int64) (int64, error) {
 
 func Excluded(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
 	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundJoining,
-		player.PlayerRoundStatusRoundExcluded, excluded{ID: id})
+		player.PlayerRoundStatusRoundExcluded, updateRound{ID: id})
 }
 
 func Joined(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
 	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundJoining,
-		player.PlayerRoundStatusRoundJoined, joined{ID: id})
+		player.PlayerRoundStatusRoundJoined, updateRound{ID: id})
 }
 
 func Collecting(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
 	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundJoined,
-		player.PlayerRoundStatusRoundCollecting, joined{ID: id})
+		player.PlayerRoundStatusRoundCollecting, updateRound{ID: id})
 }
 
 func Collected(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
 	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundCollecting,
-		player.PlayerRoundStatusRoundCollected, joined{ID: id})
+		player.PlayerRoundStatusRoundCollected, updateRound{ID: id})
 }
 
 func Submitting(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
 	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundCollected,
-		player.PlayerRoundStatusRoundSubmitting, joined{ID: id})
+		player.PlayerRoundStatusRoundSubmitting, updateRound{ID: id})
 }
 
 func Submitted(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
 	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundSubmitting,
-		player.PlayerRoundStatusRoundSubmitted, joined{ID: id})
+		player.PlayerRoundStatusRoundSubmitted, updateRound{ID: id})
 }
 
 func EndedJoined(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
 	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundSubmitted,
-		player.PlayerRoundStatusRoundEnded, joined{ID: id})
+		player.PlayerRoundStatusRoundEnded, updateRound{ID: id})
 }
 
 func EndedExcluded(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
 	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundExcluded,
-		player.PlayerRoundStatusRoundEnded, joined{ID: id})
+		player.PlayerRoundStatusRoundEnded, updateRound{ID: id})
 }
 
 func DeleteAll(ctx context.Context, dbc *sql.DB) error {
