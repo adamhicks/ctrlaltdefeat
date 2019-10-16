@@ -9,9 +9,9 @@ type Player struct {
 
 var players = []Player{
 	{Name: "wes", GRPCPort: 17513},
-	{Name: "tom", GRPCPort: 17514},
-	{Name: "sergio", GRPCPort: 17515},
-	{Name: "adam", GRPCPort: 17516},
+	//{Name: "tom", GRPCPort: 17514},
+	//{Name: "sergio", GRPCPort: 17515},
+	//{Name: "adam", GRPCPort: 17516},
 }
 
 type Config struct {
