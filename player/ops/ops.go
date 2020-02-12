@@ -10,7 +10,7 @@ func RunLoops(backends Backends, c config.Config) {
 	// e.g. go JoinRoundsForever()
 	log.Info(nil, "Starting background loops")
 	go StartMatchForever(backends, c)
-	go ConsumeMatchEventsForever(backends, c)
+	//go ConsumeMatchEventsForever(backends, c)
 	go StartRoundsForever(backends)
 	go JoinRoundsForever(backends, c)
 	go ConsumeRoundCollectEventsForever(backends)
@@ -18,6 +18,6 @@ func RunLoops(backends Backends, c config.Config) {
 	go SubmitRoundsForever(backends, c)
 	go ConsumeRoundSubmitsForever(backends, c)
 	go ConsumeMatchEndedForever(backends)
-	go ConsumeRoundEndedForever(c, backends)
+	//go ConsumeRoundEndedForever(backends)
 	go ConsumeSubmittingForever(backends, c)
 }

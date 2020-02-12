@@ -44,13 +44,8 @@ func Submitted(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, erro
 		player.PlayerRoundStatusRoundSubmitted, updateRound{ID: id})
 }
 
-func EndedJoined(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
-	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundSubmitted,
-		player.PlayerRoundStatusRoundEnded, updateRound{ID: id})
-}
-
-func EndedExcluded(ctx context.Context, tx *sql.Tx, id int64) (rsql.NotifyFunc, error) {
-	return fsm.UpdateTx(ctx, tx, player.PlayerRoundStatusRoundExcluded,
+func Ended(ctx context.Context, tx *sql.Tx, current player.PlayerRoundStatus, id int64) (rsql.NotifyFunc, error) {
+	return fsm.UpdateTx(ctx, tx, current,
 		player.PlayerRoundStatusRoundEnded, updateRound{ID: id})
 }
 

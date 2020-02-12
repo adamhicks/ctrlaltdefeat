@@ -21,7 +21,7 @@ func ConsumeSubmittingForever(b Backends, c config.Config) {
 	const submitCursor = "submitting_event_cursor"
 
 	f := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
-		if event.Type.ReflexType() != player.PlayerRoundStatusRoundSubmitting.ReflexType() {
+		if !reflex.IsType(event.Type, player.PlayerRoundStatusRoundSubmitting) {
 			return nil
 		}
 		r, err := rounds.LookupRound(ctx, b.DB(), int(event.ForeignIDInt()))
@@ -56,6 +56,7 @@ func submitRound(ctx context.Context, b Backends, c config.Config, r player.Play
 	if err != nil {
 		return err
 	}
+	defer tx.Rollback()
 	notify, err := rounds.Submitted(ctx, tx, r.ID)
 	if err != nil {
 		return err

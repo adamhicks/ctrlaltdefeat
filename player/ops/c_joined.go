@@ -19,7 +19,7 @@ func ConsumeRoundCollectEventsForever(b Backends) {
 	cli := b.EngineClient()
 
 	f := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
-		if event.Type.ReflexType() != engine.EventTypeRoundCollect.ReflexType() {
+		if !reflex.IsType(event.Type, engine.EventTypeRoundCollect) {
 			return nil
 		}
 		r, err := rounds.LookupRound(ctx, b.DB(), int(event.ForeignIDInt()))

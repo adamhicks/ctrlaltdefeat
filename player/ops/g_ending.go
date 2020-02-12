@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/adamhicks/ctrlaltdefeat/player"
-	"github.com/adamhicks/ctrlaltdefeat/player/config"
 	"github.com/adamhicks/ctrlaltdefeat/player/db/cursors"
 	"github.com/adamhicks/ctrlaltdefeat/player/db/rounds"
 	"github.com/corverroos/unsure"
@@ -16,7 +15,7 @@ import (
 const endingCursor = "ending_events"
 
 //Listen for EventTypeRoundSuccess and EventTypeRoundFailed, transition PR to RoundEnded
-func ConsumeRoundEndedForever(c config.Config, b Backends) {
+func ConsumeRoundEndedForever(b Backends) {
 	processRoundEndedEvents := func(ctx context.Context, fate fate.Fate, event *reflex.Event) error {
 		if !reflex.IsType(event.Type, engine.EventTypeRoundFailed) && !reflex.IsType(event.Type, engine.EventTypeRoundSuccess) {
 			return fate.Tempt()
@@ -33,23 +32,12 @@ func ConsumeRoundEndedForever(c config.Config, b Backends) {
 		}
 		defer tx.Rollback()
 
-		if int(round.Status) == player.PlayerRoundStatusRoundExcluded.Enum() {
-			notify, err := rounds.EndedExcluded(ctx, tx, round.ID)
-			if err != nil {
-				return err
-			}
-			defer notify()
-			return tx.Commit()
-		} else if int(round.Status) == player.PlayerRoundStatusRoundSubmitted.Enum() {
-			notify, err := rounds.EndedJoined(ctx, tx, round.ID)
-			if err != nil {
-				return err
-			}
-			defer notify()
-			return tx.Commit()
+		notify, err := rounds.Ended(ctx, tx, player.PlayerRoundStatus(round.Status), round.ID)
+		if err != nil {
+			return err
 		}
-
-		return fate.Tempt()
+		defer notify()
+		return tx.Commit()
 	}
 
 	consumer := reflex.NewConsumer(endingCursor, processRoundEndedEvents)
