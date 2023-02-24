@@ -11,6 +11,6 @@ require (
 	github.com/luno/shift v0.0.0-20190912102423-a69494119072
 	github.com/pkg/errors v0.8.1
 	github.com/prometheus/common v0.7.0
-	golang.org/x/net v0.0.0-20191009170851-d66e71096ffb
+	golang.org/x/net v0.7.0
 	google.golang.org/grpc v1.24.0
 )
